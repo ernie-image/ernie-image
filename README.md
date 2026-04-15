@@ -4,11 +4,11 @@
 >
 > **This is a personal information-collection repository. It is not an official Baidu repository and not a public release of ERNIE Image.**
 >
-> ERNIE Image is a text-to-image generation model released by the ERNIE-Image Team at Baidu on April 15, 2026, under the Apache 2.0 license. Everything in this README is gathered from publicly circulating sources — the official Hugging Face model cards, public configuration files, the reference inference code, the benchmark papers ERNIE Image is evaluated against, and independent technical write-ups — and is collected here for personal reference and learning.
+> ERNIE Image is a text-to-image generation model released by the ERNIE-Image Team at Baidu on April 15, 2026, under the Apache 2.0 license. Everything in this README is gathered from publicly circulating sources — the Hugging Face model cards, public configuration files, the reference inference code, the benchmark papers ERNIE Image is evaluated against, and independent technical write-ups — and is collected here for personal reference and learning.
 >
-> I am not affiliated with Baidu or the ERNIE-Image Team. **The information below may be incomplete, inconsistent across sources, or change at any time.** Where sources disagree or where the official model card is silent, I label the item as *reported*, *unverified*, or *not disclosed* rather than smoothing it over. I am watching for updates and will sync this README when new first-party information is published.
+> I am not affiliated with Baidu or the ERNIE-Image Team. **The information below may be incomplete, inconsistent across sources, or change at any time.** Where sources disagree or where the model card is silent, I label the item as *reported*, *unverified*, or *not disclosed* rather than smoothing it over. I am watching for updates and will sync this README when new first-party information is published.
 >
-> 👉 For the live in-browser demo and the canonical reference page, see the [official ERNIE Image platform](https://ernie-image.org).
+> 👉 For the live in-browser demo, see the [ERNIE Image platform](https://ernie-image.org).
 
 ---
 
@@ -16,22 +16,22 @@
 
 **ERNIE Image** is an open-weight **text-to-image generation model** developed by the **ERNIE-Image Team at Baidu** and released on **April 15, 2026** under the **Apache 2.0 license**. The ERNIE Image model is positioned around three headline capabilities: **long-form text rendering inside generated images**, **complex multi-object instruction following**, and **native bilingual Chinese and English prompting**.
 
-According to the official Hugging Face model card, the ERNIE Image denoiser is an **8B single-stream Diffusion Transformer** called `ErnieImageTransformer2DModel`, with 36 layers, a hidden dimension of 4096, an FFN hidden size of 12288, 32 attention heads, and 128 input/output channels. The text conditioning vector is 3072-dimensional. A dedicated lightweight **Prompt Enhancer** component (`Ministral3ForCausalLM`) can expand short user descriptions into richer, structured visual descriptions before they are passed into the diffusion pipeline.
+According to the Hugging Face model card, the ERNIE Image denoiser is an **8B single-stream Diffusion Transformer** called `ErnieImageTransformer2DModel`, with 36 layers, a hidden dimension of 4096, an FFN hidden size of 12288, 32 attention heads, and 128 input/output channels. The text conditioning vector is 3072-dimensional. A dedicated lightweight **Prompt Enhancer** component (`Ministral3ForCausalLM`) can expand short user descriptions into richer, structured visual descriptions before they are passed into the diffusion pipeline.
 
 ERNIE Image ships in **two variants** on Hugging Face:
 
 - **ERNIE Image (SFT)** — the quality-oriented base model, typically sampled at ~50 denoising steps with a classifier-free guidance scale of ~4.0.
 - **ERNIE Image Turbo** — a distilled variant trained with **DMD (Distribution Matching Distillation)** and reinforcement learning, designed to match the base model's perceptual quality in **8 sampling steps** at guidance scale ~1.0 — roughly a 6× inference speedup.
 
-The ERNIE Image public model card states that the 8B DiT runs on a single **24 GB consumer GPU**. Community write-ups on Baidu AI Studio additionally discuss 16 GB local setups and reference a "~15.4B total parameter count" figure that includes the text encoder and Prompt Enhancer alongside the 8B diffusion backbone — these community figures should be treated as unverified until cross-checked against a hands-on deployment.
+The ERNIE Image model card states that the 8B DiT runs on a single **24 GB consumer GPU**. Community write-ups on Baidu AI Studio additionally discuss 16 GB local setups and reference a "~15.4B total parameter count" figure that includes the text encoder and Prompt Enhancer alongside the 8B diffusion backbone — these community figures should be treated as unverified until cross-checked against a hands-on deployment.
 
-For the free browser-based demo of the ERNIE Image Turbo variant, see the [official ERNIE Image platform](https://ernie-image.org), which embeds the official `baidu/ERNIE-Image-Turbo` Hugging Face Space.
+For the free browser-based demo of the ERNIE Image Turbo variant, see the [ERNIE Image platform](https://ernie-image.org), which embeds the `baidu/ERNIE-Image-Turbo` Hugging Face Space.
 
 ---
 
 ## 🧱 Reported Architecture
 
-> The technical details below come from the ERNIE Image public configuration files on Hugging Face (`transformer/config.json`, `prompt_enhancer/config.json`, `text_encoder/config.json`) and from the official ERNIE Image model card. Items the model card does not disclose are labeled as such.
+> The technical details below come from the ERNIE Image public configuration files on Hugging Face (`transformer/config.json`, `prompt_enhancer/config.json`, `text_encoder/config.json`) and from the ERNIE Image model card. Items the model card does not disclose are labeled as such.
 
 ### Diffusion backbone — `ErnieImageTransformer2DModel`
 
@@ -67,7 +67,7 @@ The ERNIE Image pipeline includes a dedicated Prompt Enhancer component, togglea
 
 ### Text encoder — `Mistral3Model` with Pixtral vision config
 
-One of the more unusual details visible in the public configuration: the ERNIE Image `text_encoder/config.json` is **not a traditional CLIP text tower**. It is a `Mistral3Model` containing both a `text_config` and a `vision_config`. The `vision_config` declares `model_type: pixtral`, patch size 14, 24 layers, and hidden dim 1024, with an `image_token_index` field present — hinting at latent multimodal capability at the config level, even though the public ERNIE Image model card focuses on text-to-image use.
+One of the more unusual details visible in the public configuration: the ERNIE Image `text_encoder/config.json` is **not a traditional CLIP text tower**. It is a `Mistral3Model` containing both a `text_config` and a `vision_config`. The `vision_config` declares `model_type: pixtral`, patch size 14, 24 layers, and hidden dim 1024, with an `image_token_index` field present — hinting at latent multimodal capability at the config level, even though the ERNIE Image model card focuses on text-to-image use.
 
 This is one of the more interesting open questions about ERNIE Image for researchers: the config hints suggest image conditioning pathways that the model card does not currently document, and the behavior of `use_pe` with image inputs is not covered in the public Quickstart.
 
@@ -100,14 +100,14 @@ The ERNIE Image model card explicitly positions the model for **posters, comics,
 The ERNIE Image model card documents seven resolution presets: **1024×1024, 848×1264, 1264×848, 768×1376, 1376×768, 896×1200, and 1200×896** — enough for square posts, vertical posters, horizontal banners, storyboard panels, and UI mockups without cropping.
 
 ### Fast 8-step Turbo variant
-ERNIE Image Turbo is distilled with DMD and RL to reach **8 sampling steps at guidance 1.0**, roughly **6× faster** than the 50-step SFT model at reported comparable perceptual quality. The free browser demo at [ernie-image.org](https://ernie-image.org) runs the Turbo variant.
+ERNIE Image Turbo is distilled with DMD and RL to reach **8 sampling steps at guidance 1.0**, roughly **6× faster** than the 50-step SFT model at reported comparable perceptual quality. The free browser demo at the [ERNIE Image platform](https://ernie-image.org) runs the Turbo variant.
 
 ### Open weights under Apache 2.0
 Both variants are published on Hugging Face under the Apache 2.0 license, permitting commercial use subject to the license terms.
 
 ---
 
-## 📊 Official Benchmark Numbers
+## 📊 Benchmark Numbers from the Model Card
 
 The tables below are copied verbatim from the ERNIE Image and ERNIE Image Turbo Hugging Face model cards, evaluated 2026-04-15. Scores are in the 0–1 range; higher is better.
 
@@ -161,7 +161,7 @@ LongTextBench evaluates the legibility and accuracy of long-form text rendered *
 
 ## 🆚 ERNIE Image vs. Other Open Text-to-Image Models
 
-A frequently asked question in the community is how the ERNIE Image model stacks up against the current leaders in open-weight text-to-image. Based on the official GenEval table in the ERNIE Image model card:
+A frequently asked question in the community is how the ERNIE Image model stacks up against the current leaders in open-weight text-to-image. Based on the GenEval table published in the ERNIE Image model card:
 
 | Feature | **ERNIE Image** | Qwen-Image | FLUX.2-klein-9B | Z-Image |
 |---|---|---|---|---|
@@ -191,7 +191,7 @@ Closed-source text-to-image platforms typically do not publish their scores on t
 | Native Chinese prompting | ✅ OneIG-ZH 0.5543 reported | Implicit via translation | Implicit via translation | Implicit via translation |
 | Watermarking / provenance | User responsibility | Platform policy | SynthID watermark (Google documentation) | Platform policy |
 | Long-term availability | Local copy survives any deprecation | Subject to model retirement (e.g. DALL·E 3 → gpt-image-1 on Azure) | Subject to Google Cloud product lifecycle | Subject to Midjourney policy changes |
-| Try it free without install | [ernie-image.org](https://ernie-image.org) — embedded official Hugging Face Space | Requires account + credit | Requires Google Cloud project | Requires Discord + paid plan |
+| Try it free without install | [ernie-image.org](https://ernie-image.org) — embedded Hugging Face Space | Requires account + credit | Requires Google Cloud project | Requires Discord + paid plan |
 
 The headline differentiator for ERNIE Image against closed platforms is not raw quality — that comparison is evaluator-dependent and contested — but **supply model**: ERNIE Image weights can be downloaded once and run locally indefinitely, independent of any provider's product lifecycle decisions. For teams doing long-running creative pipelines or building on top of a specific version for reproducibility, that is a categorically different guarantee than a hosted API gives.
 
@@ -199,7 +199,7 @@ The headline differentiator for ERNIE Image against closed platforms is not raw 
 
 ## 🎯 Reported Use Cases
 
-Based on the capabilities documented in the ERNIE Image model card and the LongTextBench / GenEval / OneIG-Bench results, the ERNIE Image model is positioned for the following workflows. None of these have been independently verified in this repository; they are transcribed from the official positioning.
+Based on the capabilities documented in the ERNIE Image model card and the LongTextBench / GenEval / OneIG-Bench results, the ERNIE Image model is positioned for the following workflows. None of these have been independently verified in this repository; they are transcribed from the public positioning.
 
 - **Poster and marketing-graphic generation** — where multi-line text has to render legibly inside the image in a single pass, not as a post-hoc overlay.
 - **Comics and multi-panel storyboards** — where layout composition and dialogue-bubble text are generated together.
@@ -209,7 +209,7 @@ Based on the capabilities documented in the ERNIE Image model card and the LongT
 - **Local, reproducible creative pipelines** — workflows that need a fixed model checkpoint that will not be retired by a hosted provider.
 - **AI research** — open weights under Apache 2.0 for studying single-stream DiT architectures, DMD distillation, RL-based diffusion fine-tuning, and bilingual text-to-image training.
 
-For low-friction evaluation without a local install, the browser demo at [the official ERNIE Image platform](https://ernie-image.org) runs the ERNIE Image Turbo variant directly.
+For low-friction evaluation without a local install, the browser demo at the [ERNIE Image platform](https://ernie-image.org) runs the ERNIE Image Turbo variant directly.
 
 ---
 
@@ -219,10 +219,10 @@ For low-friction evaluation without a local install, the browser demo at [the of
 **Yes.** The ERNIE Image model is released under the Apache 2.0 license, with open weights published on Hugging Face for both the SFT base model and the 8-step Turbo distillation. Commercial use is permitted subject to the Apache 2.0 terms.
 
 ### Who built the ERNIE Image model?
-The ERNIE Image model is developed by the **ERNIE-Image Team at Baidu** and was released on **April 15, 2026**. For anything authoritative, refer to the official ERNIE Image Hugging Face model cards and Baidu's own communications; this repository is a personal information collection and is not affiliated with Baidu.
+The ERNIE Image model is developed by the **ERNIE-Image Team at Baidu** and was released on **April 15, 2026**. For anything authoritative, refer to the ERNIE Image Hugging Face model cards and Baidu's own communications; this repository is a personal information collection and is not affiliated with Baidu.
 
 ### What is the difference between ERNIE Image and ERNIE Image Turbo?
-Both variants share the same 8B single-stream Diffusion Transformer backbone. **ERNIE Image (SFT)** is the quality-oriented base model, typically sampled at ~50 denoising steps with classifier-free guidance ~4.0, and gives slightly higher Overall on GenEval. **ERNIE Image Turbo** is distilled with DMD (Distribution Matching Distillation) and reinforcement learning to reach **8 sampling steps at guidance ~1.0** — roughly 6× faster wall-clock inference at reported comparable perceptual quality. The free browser demo at [ernie-image.org](https://ernie-image.org) runs the Turbo variant.
+Both variants share the same 8B single-stream Diffusion Transformer backbone. **ERNIE Image (SFT)** is the quality-oriented base model, typically sampled at ~50 denoising steps with classifier-free guidance ~4.0, and gives slightly higher Overall on GenEval. **ERNIE Image Turbo** is distilled with DMD (Distribution Matching Distillation) and reinforcement learning to reach **8 sampling steps at guidance ~1.0** — roughly 6× faster wall-clock inference at reported comparable perceptual quality. The free browser demo at the [ERNIE Image platform](https://ernie-image.org) runs the Turbo variant.
 
 ### How good is ERNIE Image at rendering long text inside images?
 On **LongTextBench**, ERNIE Image with Prompt Enhancer averages **0.9733** across EN and ZH subsets, and the Turbo variant averages **0.9655**. The model card explicitly positions ERNIE Image for posters, comics, and labeled infographics where multi-line text rendering is load-bearing. LongTextBench is not reported by most other open text-to-image models, so direct head-to-head comparison with Qwen-Image, FLUX, Z-Image, or the closed-source platforms is not currently possible at the benchmark level.
@@ -237,10 +237,10 @@ The ERNIE Image denoiser is an **8B single-stream Diffusion Transformer** named 
 Enabling the Prompt Enhancer on ERNIE Image raises GenEval **Counting** from 0.7781 → 0.8187 and **Position** from 0.8550 → 0.8625, but lowers the **Overall** score from 0.8856 → 0.8728. The enhancer trades some attribute-binding precision for richer, more structured descriptions. Turn it **on** for detail-rich, layout-heavy, or structured scenes where elaboration helps; turn it **off** for strict attribute-binding prompts where precision on the literal user wording matters more than descriptive elaboration. Treat `use_pe` as a per-scene switch rather than a global always-on flag.
 
 ### Can ERNIE Image run on a consumer GPU?
-**Yes.** The ERNIE Image public model card states the 8B DiT runs on a single **24 GB consumer GPU**. Community write-ups on Baidu AI Studio additionally reference 16 GB local setups, though this should be treated as community-reported and validated against the official reference implementation before production use.
+**Yes.** The ERNIE Image model card states the 8B DiT runs on a single **24 GB consumer GPU**. Community write-ups on Baidu AI Studio additionally reference 16 GB local setups, though this should be treated as community-reported and validated against the reference implementation before production use.
 
 ### How fast is ERNIE Image Turbo?
-ERNIE Image Turbo samples in **8 denoising steps** with classifier-free guidance scale ~1.0, versus ~50 steps at guidance ~4.0 for the SFT base model — roughly a **6× reduction in denoising-step cost**. Absolute wall-clock numbers depend on GPU generation, resolution, batch size, and whether the Prompt Enhancer is enabled; no single "seconds per image" figure from the official model card should be treated as universal.
+ERNIE Image Turbo samples in **8 denoising steps** with classifier-free guidance scale ~1.0, versus ~50 steps at guidance ~4.0 for the SFT base model — roughly a **6× reduction in denoising-step cost**. Absolute wall-clock numbers depend on GPU generation, resolution, batch size, and whether the Prompt Enhancer is enabled; no single "seconds per image" figure from the model card should be treated as universal.
 
 ### What image resolutions does ERNIE Image support?
 The ERNIE Image model card documents **seven resolution presets**: 1024×1024, 848×1264, 1264×848, 768×1376, 1376×768, 896×1200, and 1200×896 — covering square, portrait, landscape, tall, and wide aspect ratios without requiring post-hoc cropping.
@@ -252,10 +252,10 @@ In the GenEval table published in the ERNIE Image model card (evaluated 2026-04-
 The ERNIE Image model card **does not disclose** training dataset sources, licensing provenance of training data, dataset scale, synthetic-data fraction, the specific diffusion training objective (ε-prediction vs v-prediction), alignment reward model construction, filtering and deduplication strategy, or red-team safety evaluation results. Deployments with compliance requirements — especially in jurisdictions with explicit generative-AI content rules — should treat these as open questions rather than infer them from the model's behavior.
 
 ### Where can I try ERNIE Image without installing it?
-The [official ERNIE Image platform](https://ernie-image.org) embeds the ERNIE Image Turbo Hugging Face Space in-browser: type a prompt in English or Chinese, no account, no download, no cost. Queue times depend on Space traffic. For production deployments, refer to the official Hugging Face model cards and the reference inference code for `ErnieImagePipeline` and the SGLang HTTP serving endpoint.
+The [ERNIE Image platform](https://ernie-image.org) embeds the ERNIE Image Turbo Hugging Face Space in-browser: type a prompt in English or Chinese, no account, no download, no cost. Queue times depend on Space traffic. For production deployments, refer to the Hugging Face model cards and the reference inference code for `ErnieImagePipeline` and the SGLang HTTP serving endpoint.
 
 ### Will this README be updated?
-Yes. I am tracking the official Hugging Face model cards, the Baidu ERNIE Image GitHub repository, the community write-ups on Baidu AI Studio, and independent discussion. This README will be synced when the official model cards add new benchmarks, when new quantization variants (GGUF, AWQ) are published, when additional resolution presets or pipeline features ship, or when independent reproductions of the reported LongTextBench / GenEval / OneIG numbers become available.
+Yes. I am tracking the Hugging Face model cards, the Baidu ERNIE Image GitHub repository, the community write-ups on Baidu AI Studio, and independent discussion. This README will be synced when the model cards add new benchmarks, when new quantization variants (GGUF, AWQ) are published, when additional resolution presets or pipeline features ship, or when independent reproductions of the reported LongTextBench / GenEval / OneIG numbers become available.
 
 ---
 
@@ -264,10 +264,10 @@ Yes. I am tracking the official Hugging Face model cards, the Baidu ERNIE Image 
 This README is compiled from publicly circulating information about the ERNIE Image model as of the date below. Sources referenced:
 
 **First-party — Baidu / Hugging Face**
-- Official ERNIE Image Hugging Face model card (base SFT variant) — source of all benchmark tables transcribed above.
-- Official ERNIE Image Turbo Hugging Face model card — source of the 8-step / DMD-RL distillation details.
-- Official `baidu/ERNIE-Image-Turbo` Hugging Face Space — the live demo embedded at [ernie-image.org](https://ernie-image.org).
-- Official ERNIE Image configuration files on Hugging Face: `transformer/config.json`, `prompt_enhancer/config.json`, `text_encoder/config.json`, and `prompt_enhancer/chat_template.jinja`. These are the source for the DiT layer count, hidden dimensions, Prompt Enhancer architecture, and text encoder multimodal config fields.
+- ERNIE Image Hugging Face model card (base SFT variant) — source of all benchmark tables transcribed above.
+- ERNIE Image Turbo Hugging Face model card — source of the 8-step / DMD-RL distillation details.
+- `baidu/ERNIE-Image-Turbo` Hugging Face Space — the live demo embedded at the [ERNIE Image platform](https://ernie-image.org).
+- ERNIE Image configuration files on Hugging Face: `transformer/config.json`, `prompt_enhancer/config.json`, `text_encoder/config.json`, and `prompt_enhancer/chat_template.jinja`. These are the source for the DiT layer count, hidden dimensions, Prompt Enhancer architecture, and text encoder multimodal config fields.
 - Baidu ERNIE Image GitHub repository — source for `infer_demo.py` and the `revised_prompts` audit pattern.
 - Baidu AI Studio community write-ups — source for the "~15.4B total parameters" and 16 GB community deployment figures (treated as community-reported, unverified).
 
@@ -281,16 +281,16 @@ This README is compiled from publicly circulating information about the ERNIE Im
 - Distribution Matching Distillation (DMD) — the distillation method ERNIE Image Turbo is based on.
 - GenEval 2 — the follow-up research flagging benchmark drift on GenEval, referenced in the snapshot caveats above.
 
-**Canonical reference page**
-- [ernie-image.org](https://ernie-image.org) — the **official ERNIE Image platform** with the free in-browser demo, the canonical reference page, and the live embed of `baidu/ERNIE-Image-Turbo`.
+**Live demo**
+- [ernie-image.org](https://ernie-image.org) — the **ERNIE Image platform** with the free in-browser demo and the live embed of `baidu/ERNIE-Image-Turbo`.
 
 **Last updated:** 2026-04-15
 **Status:** Initial public release tracked · monitoring for model card updates and independent reproductions
-**Will be updated when:** the official model cards publish additional benchmarks, new quantization variants ship, independent LongTextBench / GenEval / OneIG reproductions are published, or new pipeline features are documented.
+**Will be updated when:** the model cards publish additional benchmarks, new quantization variants ship, independent LongTextBench / GenEval / OneIG reproductions are published, or new pipeline features are documented.
 
 ---
 
 <p align="center">
   <em>This is a personal information-collection repository for the ERNIE Image text-to-image model.<br>
-  For the free in-browser demo and canonical reference page, see <a href="https://ernie-image.org">ernie-image.org</a>.</em>
+  For the free in-browser demo, see <a href="https://ernie-image.org">the ERNIE Image platform</a>.</em>
 </p>
